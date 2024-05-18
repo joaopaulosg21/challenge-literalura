@@ -7,6 +7,7 @@ import projeto.desafio.literalura.repository.AuthorRepository;
 import projeto.desafio.literalura.repository.BookRepository;
 import projeto.desafio.literalura.service.BuscaApi;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -51,6 +52,15 @@ public class Principal {
                 case 3:
                     buscarAutores();
                     break;
+                case 4:
+                    buscarAutoresPorData();
+                    break;
+                case 5:
+                    buscarLivrosPeloIdioma();
+                    break;
+                default:
+                    System.out.println("Opcao invalida");
+                    break;
             }
         }
     }
@@ -71,7 +81,7 @@ public class Principal {
             String response = """
                     Titulo: %s,
                     Autor: %s,
-                    Linguagem: %s,
+                    Idioma: %s,
                     Numero de downloads: %d
                     """.formatted(l.getTitle(), l.getAuthor().getName(),l.getLanguage(),l.getDownloadCount());
             System.out.println(response);
@@ -84,8 +94,9 @@ public class Principal {
             String response = """
                     Nome: %s,
                     Ano do nascimento: %d,
-                    Ano da morte: %d
-                    """.formatted(a.getName(),a.getBirthYear(),a.getDeathYear());
+                    Ano da morte: %d,
+                    Livros: %s
+                    """.formatted(a.getName(),a.getBirthYear(),a.getDeathYear(),a.getBooks());
             System.out.println(response);
         });
     }
@@ -100,5 +111,48 @@ public class Principal {
         }else {
             repository.save(book);
         }
+    }
+
+    private void buscarAutoresPorData() {
+        System.out.println("Insira o ano que deseja pesquisar");
+        int ano = leitura.nextInt();
+        leitura.nextLine();
+
+        authorRepository.buscarPorDeterminadoAno(ano).forEach(a -> {
+            String response = """
+                    Nome: %s,
+                    Ano do nascimento: %d,
+                    Ano da morte: %d,
+                    Livros: %s
+                    """.formatted(a.getName(),a.getBirthYear(),a.getDeathYear(),a.getBooks());
+            System.out.println(response);
+        });
+    }
+
+    private void buscarLivrosPeloIdioma(){
+        System.out.println("""
+                es- espanhol,
+                en- ingles
+                fr - frances
+                pt- portugues
+                """);
+        System.out.print("Digite o idioma para a busca:");
+        String idioma = leitura.nextLine();
+
+        List<Book> books = repository.buscarLivrosPeloIdioma(idioma);
+
+        if(books.isEmpty()) {
+            System.out.println("\nNao existem livros registrados nesse idioma\n");
+
+        }
+        books.forEach(l -> {
+            String response = """
+                    Titulo: %s,
+                    Autor: %s,
+                    Idioma: %s,
+                    Numero de downloads: %d
+                    """.formatted(l.getTitle(), l.getAuthor().getName(),l.getLanguage(),l.getDownloadCount());
+            System.out.println(response);
+        });
     }
 }

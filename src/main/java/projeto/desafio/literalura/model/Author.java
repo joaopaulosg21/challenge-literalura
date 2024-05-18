@@ -24,7 +24,7 @@ public class Author {
     @JsonAlias("death_year")
     private Integer deathYear;
 
-    @OneToMany(mappedBy = "author",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Book> books = new ArrayList<>();
 
     public Author(){}
@@ -59,5 +59,13 @@ public class Author {
 
     public void setDeathYear(Integer deathYear) {
         this.deathYear = deathYear;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 }
