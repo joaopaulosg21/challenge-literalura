@@ -6,6 +6,10 @@
 ## Dependências
     - Necessario possuir o Java instalado
 
+## Tecnologias utilizadas
+    - Java 17
+    - Spring boot 3.2.5
+
 ## Como utilizar
 
 - No terminal clone o projeto
