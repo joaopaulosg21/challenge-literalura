@@ -15,7 +15,7 @@ public class Book {
 
     private String title;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Author author;
 
     private String language;

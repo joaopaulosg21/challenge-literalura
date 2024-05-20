@@ -35,6 +35,7 @@ public class Principal {
               3 - Listar autores registrados
               4 - Listar autores vivos em um determinado ano
               5 - Listar livros em um determinado idioma
+              6 - Top 10 mais baixados
               0 - sair
                 """;
 
@@ -58,6 +59,8 @@ public class Principal {
                 case 5:
                     buscarLivrosPeloIdioma();
                     break;
+                case 6:
+                    top10MaisBaixados();
                 default:
                     System.out.println("Opcao invalida");
                     break;
@@ -102,10 +105,10 @@ public class Principal {
     }
 
     private void buscarAutorPeloNome(Book book) {
-        Optional<Book> optionalBook = repository.buscarAuthorPeloNome(book.getAuthor().getName());
+        Optional<Author> optionalAuthor = authorRepository.buscarAuthorPeloNome(book.getAuthor().getName());
 
-        if(optionalBook.isPresent()) {
-            Author author = optionalBook.get().getAuthor();
+        if(optionalAuthor.isPresent()) {
+            Author author = optionalAuthor.get();
             book.setAuthor(author);
             repository.save(book);
         }else {
@@ -154,5 +157,19 @@ public class Principal {
                     """.formatted(l.getTitle(), l.getAuthor().getName(),l.getLanguage(),l.getDownloadCount());
             System.out.println(response);
         });
+    }
+
+    private void top10MaisBaixados() {
+        System.out.println("*** TOP 10 LIVROS MAIS BAIXADOS***");
+        repository.top10MaisBaixados().forEach(l -> {
+            String response = """
+                    Titulo: %s,
+                    Autor: %s,
+                    Idioma: %s,
+                    Numero de downloads: %d
+                    """.formatted(l.getTitle(), l.getAuthor().getName(),l.getLanguage(),l.getDownloadCount());
+            System.out.println(response);
+        });
+
     }
 }
