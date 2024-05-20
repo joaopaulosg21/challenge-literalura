@@ -12,6 +12,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     @Query("SELECT a FROM Author a WHERE :ano BETWEEN a.birthYear AND a.deathYear")
     List<Author> buscarPorDeterminadoAno(int ano);
 
-    @Query("SELECT a FROM Author a WHERE a.name = :nome")
+    @Query("SELECT a FROM Author a WHERE LOWER(a.name) = LOWER(:nome)")
     Optional<Author> buscarAuthorPeloNome(String nome);
 }

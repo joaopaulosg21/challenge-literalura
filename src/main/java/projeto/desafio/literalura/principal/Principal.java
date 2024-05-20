@@ -36,6 +36,7 @@ public class Principal {
               4 - Listar autores vivos em um determinado ano
               5 - Listar livros em um determinado idioma
               6 - Top 10 mais baixados
+              7 - Buscar autor pelo nome
               0 - sair
                 """;
 
@@ -61,6 +62,13 @@ public class Principal {
                     break;
                 case 6:
                     top10MaisBaixados();
+                    break;
+                case 7:
+                    buscarAuthorPeloNome();
+                    break;
+                case 0:
+                    System.out.println("Saindo do sistema...");
+                    break;
                 default:
                     System.out.println("Opcao invalida");
                     break;
@@ -74,7 +82,7 @@ public class Principal {
         nomeLivro = nomeLivro.replaceAll(" ","%20").trim().toLowerCase();
         ApiResponseDTO response = buscaApi.obterDados(ENDERECO+nomeLivro, ApiResponseDTO.class);
         Book book = new Book(response.results().get(0));
-        buscarAutorPeloNome(book);
+        salvarLivroNoBanco(book);
         System.out.println("Livro " + book.getTitle() + " salvo com sucesso");
     }
 
@@ -104,7 +112,7 @@ public class Principal {
         });
     }
 
-    private void buscarAutorPeloNome(Book book) {
+    private void salvarLivroNoBanco(Book book) {
         Optional<Author> optionalAuthor = authorRepository.buscarAuthorPeloNome(book.getAuthor().getName());
 
         if(optionalAuthor.isPresent()) {
@@ -170,6 +178,25 @@ public class Principal {
                     """.formatted(l.getTitle(), l.getAuthor().getName(),l.getLanguage(),l.getDownloadCount());
             System.out.println(response);
         });
+    }
 
+    private void buscarAuthorPeloNome() {
+        System.out.print("Digite o nome do autor: ");
+        String nomeAuthor = leitura.nextLine();
+
+        Optional<Author> optionalAuthor = authorRepository.buscarAuthorPeloNome(nomeAuthor);
+
+        if(optionalAuthor.isPresent()){
+            Author a = optionalAuthor.get();
+            String response = """
+                    Nome: %s,
+                    Ano do nascimento: %d,
+                    Ano da morte: %d,
+                    Livros: %s
+                    """.formatted(a.getName(),a.getBirthYear(),a.getDeathYear(),a.getBooks());
+            System.out.println(response);
+        }else {
+            System.out.println("Nenhum autor com esse nome registrado!");
+        }
     }
 }
